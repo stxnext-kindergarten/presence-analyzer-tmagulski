@@ -1,2 +1,4 @@
-presence-analyzer-tmagulski
-===========================
+Presence Analyzer Tomasz Magulski
+=================
+
+Calculate and show employees presence statistics.

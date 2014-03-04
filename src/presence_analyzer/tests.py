@@ -96,7 +96,6 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(len(data), 0)
         self.assertEqual(data, [])
 
-
     def test_api_start_end(self):
         """
         Test start and end of user.
@@ -118,6 +117,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         data = json.loads(resp.data)
         self.assertEqual(len(data), 0)
         self.assertListEqual(data, [])
+
 
 class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
     """

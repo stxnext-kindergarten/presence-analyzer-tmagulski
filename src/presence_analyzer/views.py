@@ -4,7 +4,7 @@ Defines views.
 """
 
 import calendar
-from flask import redirect, render_template
+from flask import redirect, render_template, url_for
 
 from presence_analyzer.main import app
 from presence_analyzer import utils
@@ -18,7 +18,7 @@ def mainpage():
     """
     Redirects to front page.
     """
-    return redirect('/presence_weekday')
+    return redirect(url_for('presence_weekday_ui_view'))
 
 @app.route('/presence_weekday')
 def presence_weekday_ui_view():

@@ -98,7 +98,7 @@
                         chart_div.hide();
                         $.getJSON("/api/v1/presence_start_end/"+selected_user, function(result) {
 
-                        for(var i = 0; i < 7; i++){
+                        for(var i = 0; i < result.length; i++){
                             result[i][1] = new Date(1, 1, 1, result[i][1]/3600, (result[i][1]%3600)/60, result[i][1]%60);
                             result[i][2] = new Date(1, 1, 1, result[i][2]/3600, (result[i][2]%3600)/60, result[i][2]%60);
                         }

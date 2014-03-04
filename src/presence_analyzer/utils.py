@@ -78,6 +78,17 @@ def group_by_weekday(items):
     return result
 
 
+def group_times_by_weekday(items, which_time):
+    """
+    Groups starts of presence by weekday.
+    """
+    result = {i: [] for i in range(7)}
+    for date in items:
+        time = items[date][which_time]
+        result[date.weekday()].append(seconds_since_midnight(time))
+    return result
+
+
 def seconds_since_midnight(time):
     """
     Calculates amount of seconds since midnight.

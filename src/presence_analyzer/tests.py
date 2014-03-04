@@ -97,6 +97,28 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(data, [])
 
 
+    def test_api_start_end(self):
+        """
+        Test start and end of user.
+        """
+        resp = self.client.get('/api/v1/presence_start_end/10')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertLess(len(data), 8)
+        for weekday in data:
+            self.assertEqual(len(weekday), 3)
+            self.assertTrue(weekday[0] in calendar.day_abbr)
+            self.assertIsInstance(weekday[1], numbers.Number)
+            self.assertIsInstance(weekday[2], numbers.Number)
+            self.assertLess(weekday[1], weekday[2])
+        resp = self.client.get('/api/v1/presence_start_end/100')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertEqual(len(data), 0)
+        self.assertListEqual(data, [])
+
 class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
     """
     Utility functions tests.

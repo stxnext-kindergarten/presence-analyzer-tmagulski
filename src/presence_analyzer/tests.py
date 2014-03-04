@@ -55,6 +55,47 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(len(data), 2)
         self.assertDictEqual(data[0], {u'user_id': 10, u'name': u'User 10'})
 
+    def test_api_mean_time(self):
+        """
+        Test mean times of user.
+        """
+        resp = self.client.get('/api/v1/mean_time_weekday/10')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertEqual(len(data), 7)
+        for weekday in data:
+            self.assertEqual(len(weekday), 2)
+            self.assertTrue(weekday[0] in calendar.day_abbr)
+            self.assertIsInstance(weekday[1], numbers.Number)
+        resp = self.client.get('/api/v1/mean_time_weekday/100')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertEqual(len(data), 0)
+        self.assertListEqual(data, [])
+
+    def test_api_presence(self):
+        """
+        Test presence of user.
+        """
+        resp = self.client.get('/api/v1/presence_weekday/10')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertEqual(len(data), 8)
+        self.assertListEqual(data[0], ['Weekday', 'Presence (s)'])
+        for weekday in data[1:]:
+            self.assertEqual(len(weekday), 2)
+            self.assertTrue(weekday[0] in calendar.day_abbr)
+            self.assertIsInstance(weekday[1], numbers.Number)
+        resp = self.client.get('/api/v1/presence_weekday/100')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertEqual(len(data), 0)
+        self.assertEqual(data, [])
+
 
     def test_api_start_end(self):
         """
@@ -107,6 +148,26 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         self.assertItemsEqual(data[10][sample_date].keys(), ['start', 'end'])
         self.assertEqual(data[10][sample_date]['start'],
                          datetime.time(9, 39, 5))
+
+    def test_seconds_since_midnight(self):
+        """
+        Test seconds since midnight.
+        """
+        sample_time = datetime.time(0, 0, 0)
+        data = utils.seconds_since_midnight(sample_time)
+        self.assertEqual(data, 0)
+        sample_time = datetime.time(0, 0, 1)
+        data = utils.seconds_since_midnight(sample_time)
+        self.assertEqual(data, 1)
+        sample_time = datetime.time(0, 1, 0)
+        data = utils.seconds_since_midnight(sample_time)
+        self.assertEqual(data, 60)
+        sample_time = datetime.time(1, 0, 0)
+        data = utils.seconds_since_midnight(sample_time)
+        self.assertEqual(data, 3600)
+        sample_time = datetime.time(23, 59, 59)
+        data = utils.seconds_since_midnight(sample_time)
+        self.assertEqual(data, 86399)
 
 
 def suite():

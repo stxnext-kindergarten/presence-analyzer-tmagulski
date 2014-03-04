@@ -114,6 +114,26 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         self.assertEqual(data[10][sample_date]['start'],
                          datetime.time(9, 39, 5))
 
+    def test_seconds_since_midnight(self):
+        """
+        Test seconds since midnight.
+        """
+        sample_time = datetime.time(0,0,0)
+        data = utils.seconds_since_midnight(sample_time)
+        self.assertEqual(data, 0)
+        sample_time = datetime.time(0,0,1)
+        data = utils.seconds_since_midnight(sample_time)
+        self.assertEqual(data, 1)
+        sample_time = datetime.time(0,1,0)
+        data = utils.seconds_since_midnight(sample_time)
+        self.assertEqual(data, 60)
+        sample_time = datetime.time(1,0,0)
+        data = utils.seconds_since_midnight(sample_time)
+        self.assertEqual(data, 3600)
+        sample_time = datetime.time(23, 59, 59)
+        data = utils.seconds_since_midnight(sample_time)
+        self.assertEqual(data, 86399)
+
 def suite():
     """
     Default test suite.

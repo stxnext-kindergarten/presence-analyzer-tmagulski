@@ -5,6 +5,8 @@ Presence analyzer unit tests.
 import os.path
 import json
 import datetime
+import calendar
+import numbers
 import unittest
 
 from presence_analyzer import main, views, utils
@@ -62,11 +64,16 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(resp.content_type, 'application/json')
         data = json.loads(resp.data)
         self.assertEqual(len(data), 7)
+        for weekday in data:
+            self.assertEqual(len(weekday), 2)
+            self.assertTrue(weekday[0] in calendar.day_abbr)
+            self.assertIsInstance(weekday[1], numbers.Number)
         resp = self.client.get('/api/v1/mean_time_weekday/100')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.content_type, 'application/json')
         data = json.loads(resp.data)
         self.assertEqual(len(data), 0)
+        self.assertListEqual(data, [])
 
     def test_api_presence(self):
         """
@@ -78,11 +85,16 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         data = json.loads(resp.data)
         self.assertEqual(len(data), 8)
         self.assertListEqual(data[0], ['Weekday', 'Presence (s)'])
+        for weekday in data[1:]:
+            self.assertEqual(len(weekday), 2)
+            self.assertTrue(weekday[0] in calendar.day_abbr)
+            self.assertIsInstance(weekday[1], numbers.Number)
         resp = self.client.get('/api/v1/presence_weekday/100')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.content_type, 'application/json')
         data = json.loads(resp.data)
         self.assertEqual(len(data), 0)
+        self.assertEqual(data, [])
 
 
 class PresenceAnalyzerUtilsTestCase(unittest.TestCase):

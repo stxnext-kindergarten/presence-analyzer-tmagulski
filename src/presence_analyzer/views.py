@@ -68,6 +68,7 @@ def presence_weekday_view(user_id):
     result.insert(0, ('Weekday', 'Presence (s)'))
     return result
 
+
 @app.route('/api/v1/presence_start_end/<int:user_id>', methods=['GET'])
 @jsonify
 def presence_start_end_view(user_id):
@@ -81,6 +82,8 @@ def presence_start_end_view(user_id):
 
     starts = group_starts_by_weekday(data[user_id])
     ends = group_ends_by_weekday(data[user_id])
-    result = [(calendar.day_abbr[weekday], mean(starts[weekday]), mean(ends[weekday]))
-              for weekday in starts if len(starts[weekday]) > 0]            
+    result = [(calendar.day_abbr[weekday],
+               mean(starts[weekday]),
+               mean(ends[weekday]))
+              for weekday in starts if len(starts[weekday]) > 0]
     return result

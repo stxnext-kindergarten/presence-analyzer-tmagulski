@@ -80,8 +80,8 @@ def presence_start_end_view(user_id):
         log.debug('User %s not found!', user_id)
         return []
 
-    starts = group_starts_by_weekday(data[user_id])
-    ends = group_ends_by_weekday(data[user_id])
+    starts = group_times_by_weekday(data[user_id], 'start')
+    ends = group_times_by_weekday(data[user_id], 'end')
     result = [(calendar.day_abbr[weekday],
                mean(starts[weekday]),
                mean(ends[weekday]))

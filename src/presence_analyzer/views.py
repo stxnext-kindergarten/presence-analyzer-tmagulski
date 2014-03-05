@@ -25,21 +25,21 @@ def presence_weekday_ui_view():
     """
     Rendering presence weekday view for web UI.
     """
-    return render_template('presence_weekday.html')
+    return render_template('presence_weekday.html', title='Presence by weekday')
 
 @app.route('/mean_time_weekday')
 def mean_time_weekday_ui_view():
     """
     Rendering mean time weekday view for web UI.
     """
-    return render_template('mean_time_weekday.html')
+    return render_template('mean_time_weekday.html', title='Presence mean time by weekday')
 
 @app.route('/presence_start_end')
 def presence_start_end_ui_view():
     """
     Rendering presence start end view for web UI.
     """
-    return render_template('presence_start_end.html')
+    return render_template('presence_start_end.html', title='Presence start-end weekday')
 
 @app.route('/api/v1/users', methods=['GET'])
 @utils.jsonify

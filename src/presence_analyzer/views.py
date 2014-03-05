@@ -20,26 +20,33 @@ def mainpage():
     """
     return redirect(url_for('presence_weekday_ui_view'))
 
+
 @app.route('/presence_weekday')
 def presence_weekday_ui_view():
     """
     Rendering presence weekday view for web UI.
     """
-    return render_template('presence_weekday.html', title='Presence by weekday')
+    return render_template('presence_weekday.html',
+                           title='Presence by weekday')
+
 
 @app.route('/mean_time_weekday')
 def mean_time_weekday_ui_view():
     """
     Rendering mean time weekday view for web UI.
     """
-    return render_template('mean_time_weekday.html', title='Presence mean time by weekday')
+    return render_template('mean_time_weekday.html',
+                           title='Presence mean time by weekday')
+
 
 @app.route('/presence_start_end')
 def presence_start_end_ui_view():
     """
     Rendering presence start end view for web UI.
     """
-    return render_template('presence_start_end.html', title='Presence start-end weekday')
+    return render_template('presence_start_end.html',
+                           title='Presence start-end weekday')
+
 
 @app.route('/api/v1/users', methods=['GET'])
 @utils.jsonify
@@ -52,7 +59,9 @@ def users_view():
             for i in data.keys()]
 
 
-@app.route('/api/v1/mean_time_weekday/', methods=['GET'], defaults={'user_id':None})
+@app.route('/api/v1/mean_time_weekday/',
+           methods=['GET'],
+           defaults={'user_id': None})
 @app.route('/api/v1/mean_time_weekday/<user_id>', methods=['GET'])
 @utils.jsonify
 def mean_time_weekday_view(user_id):
@@ -72,7 +81,9 @@ def mean_time_weekday_view(user_id):
     return result
 
 
-@app.route('/api/v1/presence_weekday/', methods=['GET'], defaults={'user_id':None})
+@app.route('/api/v1/presence_weekday/',
+           methods=['GET'],
+           defaults={'user_id': None})
 @app.route('/api/v1/presence_weekday/<user_id>', methods=['GET'])
 @utils.jsonify
 def presence_weekday_view(user_id):
@@ -93,7 +104,9 @@ def presence_weekday_view(user_id):
     return result
 
 
-@app.route('/api/v1/presence_start_end/', methods=['GET'], defaults={'user_id':None})
+@app.route('/api/v1/presence_start_end/',
+           methods=['GET'],
+           defaults={'user_id': None})
 @app.route('/api/v1/presence_start_end/<user_id>', methods=['GET'])
 @utils.jsonify
 def presence_start_end_view(user_id):

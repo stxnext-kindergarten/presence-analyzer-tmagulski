@@ -14,38 +14,22 @@ log = logging.getLogger(__name__)  # pylint: disable-msg=C0103
 
 
 @app.route('/')
-def mainpage():
+@app.route('/<view>')
+def UIview(view=None):
     """
-    Redirects to front page.
+    View responsible for generating UI for all tempalates
     """
-    return redirect(url_for('presence_weekday_ui_view'))
-
-
-@app.route('/presence_weekday')
-def presence_weekday_ui_view():
-    """
-    Rendering presence weekday view for web UI.
-    """
-    return render_template('presence_weekday.html',
-                           title='Presence by weekday')
-
-
-@app.route('/mean_time_weekday')
-def mean_time_weekday_ui_view():
-    """
-    Rendering mean time weekday view for web UI.
-    """
-    return render_template('mean_time_weekday.html',
-                           title='Presence mean time by weekday')
-
-
-@app.route('/presence_start_end')
-def presence_start_end_ui_view():
-    """
-    Rendering presence start end view for web UI.
-    """
-    return render_template('presence_start_end.html',
-                           title='Presence start-end weekday')
+    if view is None:
+        return redirect(url_for('UIview', view='presence_weekday'))
+    elif view == 'presence_weekday':
+        return render_template('presence_weekday.html',
+                               title='Presence by weekday')
+    elif view == 'mean_time_weekday':
+        return render_template('mean_time_weekday.html',
+                               title='Presence mean time by weekday')
+    elif view == 'presence_start_end':
+        return render_template('presence_start_end.html',
+                               title='Presence start-end weekday')
 
 
 @app.route('/api/v1/users', methods=['GET'])

@@ -52,12 +52,13 @@ def users_view():
             for i in data.keys()]
 
 
-@app.route('/api/v1/mean_time_weekday/<int:user_id>', methods=['GET'])
+@app.route('/api/v1/mean_time_weekday/<user_id>', methods=['GET'])
 @utils.jsonify
 def mean_time_weekday_view(user_id):
     """
     Returns mean presence time of given user grouped by weekday.
     """
+    user_id = int(user_id)
     data = utils.get_data()
     if user_id not in data:
         log.debug('User %s not found!', user_id)
@@ -70,12 +71,13 @@ def mean_time_weekday_view(user_id):
     return result
 
 
-@app.route('/api/v1/presence_weekday/<int:user_id>', methods=['GET'])
+@app.route('/api/v1/presence_weekday/<user_id>', methods=['GET'])
 @utils.jsonify
 def presence_weekday_view(user_id):
     """
     Returns total presence time of given user grouped by weekday.
     """
+    user_id = int(user_id)
     data = utils.get_data()
     if user_id not in data:
         log.debug('User %s not found!', user_id)
@@ -89,12 +91,13 @@ def presence_weekday_view(user_id):
     return result
 
 
-@app.route('/api/v1/presence_start_end/<int:user_id>', methods=['GET'])
+@app.route('/api/v1/presence_start_end/<user_id>', methods=['GET'])
 @utils.jsonify
 def presence_start_end_view(user_id):
     """
     Return mean times of start and and of work for given user.
     """
+    user_id = int(user_id)
     data = utils.get_data()
     if user_id not in data:
         log.debug('User %s not found!', user_id)

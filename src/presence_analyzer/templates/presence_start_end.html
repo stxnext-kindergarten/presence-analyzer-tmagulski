@@ -82,7 +82,7 @@
         (function($) {
             $(document).ready(function(){
                 var loading = $('#loading');
-                $.getJSON("/api/v1/users", function(result) {
+                $.getJSON("{{ url_for('users_view') }}", function(result) {
                     var dropdown = $("#user_id");
                     $.each(result, function(item) {
                         dropdown.append($("<option />").val(this.user_id).text(this.name));
@@ -96,7 +96,7 @@
                     if(selected_user) {
                         loading.show();
                         chart_div.hide();
-                        $.getJSON("/api/v1/presence_start_end/"+selected_user, function(result) {
+                        $.getJSON("{{ url_for('presence_start_end_view', user_id='') }}"+selected_user, function(result) {
 
                         for(var i = 0; i < result.length; i++){
                             result[i][1] = new Date(1, 1, 1, result[i][1]/3600, (result[i][1]%3600)/60, result[i][1]%60);

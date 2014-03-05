@@ -52,6 +52,7 @@ def users_view():
             for i in data.keys()]
 
 
+@app.route('/api/v1/mean_time_weekday/', methods=['GET'], defaults={'user_id':None})
 @app.route('/api/v1/mean_time_weekday/<user_id>', methods=['GET'])
 @utils.jsonify
 def mean_time_weekday_view(user_id):
@@ -71,6 +72,7 @@ def mean_time_weekday_view(user_id):
     return result
 
 
+@app.route('/api/v1/presence_weekday/', methods=['GET'], defaults={'user_id':None})
 @app.route('/api/v1/presence_weekday/<user_id>', methods=['GET'])
 @utils.jsonify
 def presence_weekday_view(user_id):
@@ -91,6 +93,7 @@ def presence_weekday_view(user_id):
     return result
 
 
+@app.route('/api/v1/presence_start_end/', methods=['GET'], defaults={'user_id':None})
 @app.route('/api/v1/presence_start_end/<user_id>', methods=['GET'])
 @utils.jsonify
 def presence_start_end_view(user_id):

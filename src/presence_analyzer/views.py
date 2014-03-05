@@ -4,7 +4,8 @@ Defines views.
 """
 
 import calendar
-from flask import redirect, render_template, url_for
+from flask import redirect, render_template, url_for, abort
+from jinja2 import TemplateNotFound
 
 from presence_analyzer.main import app
 from presence_analyzer import utils
@@ -19,17 +20,16 @@ def UIview(view=None):
     """
     View responsible for generating UI for all tempalates
     """
+    titles = { 'presence_weekday': 'Presence by weekday',
+               'mean_time_weekday': 'Presence mean time by weekday',
+               'presence_start_end': 'Presence start-end weekday' }
     if view is None:
         return redirect(url_for('UIview', view='presence_weekday'))
-    elif view == 'presence_weekday':
-        return render_template('presence_weekday.html',
-                               title='Presence by weekday')
-    elif view == 'mean_time_weekday':
-        return render_template('mean_time_weekday.html',
-                               title='Presence mean time by weekday')
-    elif view == 'presence_start_end':
-        return render_template('presence_start_end.html',
-                               title='Presence start-end weekday')
+    else:
+        try: 
+            return render_template(view + '.html', title=titles[view])
+        except KeyError, TemplateNotFound:
+            abort(404)
 
 
 @app.route('/api/v1/users', methods=['GET'])

@@ -35,14 +35,18 @@ def get_data():
     It creates structure like this:
     data = {
         'user_id': {
-            datetime.date(2013, 10, 1): {
-                'start': datetime.time(9, 0, 0),
-                'end': datetime.time(17, 30, 0),
-            },
-            datetime.date(2013, 10, 2): {
-                'start': datetime.time(8, 30, 0),
-                'end': datetime.time(16, 45, 0),
-            },
+            'name': name,
+            'avatar': avatar,
+            'times': {
+                datetime.date(2013, 10, 1): {
+                    'start': datetime.time(9, 0, 0),
+                    'end': datetime.time(17, 30, 0),
+                },
+                datetime.date(2013, 10, 2): {
+                    'start': datetime.time(8, 30, 0),
+                    'end': datetime.time(16, 45, 0),
+                }
+            }
         }
     }
     """
@@ -62,20 +66,24 @@ def get_data():
             except (ValueError, TypeError):
                 log.debug('Problem with line %d: ', i, exc_info=True)
 
-            data.setdefault(user_id, {})[date] = {'start': start, 'end': end}
+            data.setdefault(user_id, {'times': {}})['times'][date] = {'start': start, 'end': end}
     
     with open(app.config['DATA_XML'], 'r') as xmlfile:
         users_info = etree.parse(xmlfile)
+        server = users_info.find('./server')
+        host = server.find('./host').text
+        port = server.find('./port').text
+        protocol = server.find('./protocol').text
+        root_url = protocol+'://'+host+':'+port
         for i in users_info.findall('./users/user'):
             used_id = i.attrib['id']
             name = i.find('./name').text
             print name
             avatar = i.find('./avatar').text
             print avatar
-            data.setdefault(user_id, {})['name'] = name
-            data.setdefault(user_id, {})['avatar'] = avatar
-    
-
+            data.setdefault(user_id, {'times': {}})['name'] = name
+            data.setdefault(user_id, {'times': {}})['avatar'] = root_url+avatar
+    print data
     return data
 
 

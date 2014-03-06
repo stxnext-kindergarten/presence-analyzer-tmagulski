@@ -55,7 +55,7 @@ def mean_time_weekday_view(user_id=None):
         log.debug('User %s not found!', user_id)
         return []
 
-    weekdays = utils.group_by_weekday(data[user_id])
+    weekdays = utils.group_by_weekday(data[user_id]['times'])
     result = [(calendar.day_abbr[weekday], utils.mean(intervals))
               for weekday, intervals in weekdays.items()]
 
@@ -74,7 +74,7 @@ def presence_weekday_view(user_id):
         log.debug('User %s not found!', user_id)
         return []
 
-    weekdays = utils.group_by_weekday(data[user_id])
+    weekdays = utils.group_by_weekday(data[user_id]['times'])
     result = [(calendar.day_abbr[weekday], sum(intervals))
               for weekday, intervals in weekdays.items()]
 
@@ -94,8 +94,8 @@ def presence_start_end_view(user_id=None):
         log.debug('User %s not found!', user_id)
         return []
 
-    starts = utils.group_times_by_weekday(data[user_id], 'start')
-    ends = utils.group_times_by_weekday(data[user_id], 'end')
+    starts = utils.group_times_by_weekday(data[user_id]['times'], 'start')
+    ends = utils.group_times_by_weekday(data[user_id]['times'], 'end')
     result = [(calendar.day_abbr[weekday],
                utils.mean(starts[weekday]),
                utils.mean(ends[weekday]))

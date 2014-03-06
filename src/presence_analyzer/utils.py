@@ -78,12 +78,10 @@ def get_data():
         for i in users_info.findall('./users/user'):
             used_id = i.attrib['id']
             name = i.find('./name').text
-            print name
             avatar = i.find('./avatar').text
-            print avatar
             data.setdefault(user_id, {'times': {}})['name'] = name
             data.setdefault(user_id, {'times': {}})['avatar'] = root_url+avatar
-    print data
+    
     return data
 
 

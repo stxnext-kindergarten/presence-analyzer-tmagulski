@@ -4,6 +4,7 @@ Helper functions used in views.
 """
 
 import csv
+from lxml import etree
 from json import dumps
 from functools import wraps
 from datetime import datetime
@@ -62,6 +63,18 @@ def get_data():
                 log.debug('Problem with line %d: ', i, exc_info=True)
 
             data.setdefault(user_id, {})[date] = {'start': start, 'end': end}
+    
+    with open(app.config['DATA_XML'], 'r') as xmlfile:
+        users_info = etree.parse(xmlfile)
+        for i in users_info.findall('./users/user'):
+            used_id = i.attrib['id']
+            name = i.find('./name').text
+            print name
+            avatar = i.find('./avatar').text
+            print avatar
+            data.setdefault(user_id, {})['name'] = name
+            data.setdefault(user_id, {})['avatar'] = avatar
+    
 
     return data
 

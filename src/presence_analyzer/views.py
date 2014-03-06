@@ -16,17 +16,17 @@ log = logging.getLogger(__name__)  # pylint: disable-msg=C0103
 
 @app.route('/')
 @app.route('/<view>')
-def UIview(view=None):
+def ui_view(view=None):
     """
     View responsible for generating UI for all tempalates
     """
-    titles = { 'presence_weekday': 'Presence by weekday',
-               'mean_time_weekday': 'Presence mean time by weekday',
-               'presence_start_end': 'Presence start-end weekday' }
+    titles = {'presence_weekday': 'Presence by weekday',
+              'mean_time_weekday': 'Presence mean time by weekday',
+              'presence_start_end': 'Presence start-end weekday'}
     if view is None:
-        return redirect(url_for('UIview', view='presence_weekday'))
+        return redirect(url_for('ui_view', view='presence_weekday'))
     else:
-        try: 
+        try:
             return render_template(view + '.html', title=titles[view])
         except KeyError, TemplateNotFound:
             abort(404)

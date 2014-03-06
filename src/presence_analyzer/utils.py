@@ -66,8 +66,11 @@ def get_data():
             except (ValueError, TypeError):
                 log.debug('Problem with line %d: ', i, exc_info=True)
 
-            data.setdefault(user_id, {'times': {}})['times'][date] = {'start': start, 'end': end}
-    
+            data.setdefault(user_id, {'times': {}})['times'][date] = {
+                'start': start,
+                'end': end
+            }
+
     with open(app.config['DATA_XML'], 'r') as xmlfile:
         users_info = etree.parse(xmlfile)
         server = users_info.find('./server')

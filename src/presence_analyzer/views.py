@@ -42,9 +42,14 @@ def users_view():
     response = []
     for i in data.keys():
         if 'name' in data[i]:
-            response.append({'user_id': i, 'name': data[i]['name']})
+            response.append({'user_id': i,
+                             'name': data[i]['name'],
+                             'avatar': data[i]['avatar']})
         else:
-            response.append({'user_id': i, 'name': 'User {0}'.format(str(i))})
+            response.append({'user_id': i,
+                             'name': 'User {0}'.format(str(i)),
+                             'avatar': None})
+
     return response
 
 

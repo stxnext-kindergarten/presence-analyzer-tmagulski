@@ -18,4 +18,5 @@ def run():
             log.debug('Problem with fetching xml from remote location.')
         except KeyError:
             log.debug('REMOTE_XML not configured in configuration of app.')
-        xml_file.write(new_xml)
+        else:
+            xml_file.write(new_xml)

@@ -76,12 +76,11 @@ def get_data():
         protocol = server.find('./protocol').text
         root_url = protocol+'://'+host+':'+port
         for i in users_info.findall('./users/user'):
-            used_id = i.attrib['id']
+            user_id = int(i.attrib['id'])
             name = i.find('./name').text
             avatar = i.find('./avatar').text
             data.setdefault(user_id, {'times': {}})['name'] = name
             data.setdefault(user_id, {'times': {}})['avatar'] = root_url+avatar
-    
     return data
 
 

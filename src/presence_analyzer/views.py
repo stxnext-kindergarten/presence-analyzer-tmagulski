@@ -4,7 +4,8 @@ Defines views.
 """
 
 import calendar
-from flask import redirect
+from flask import redirect, render_template, url_for, abort
+from jinja2 import TemplateNotFound
 
 from presence_analyzer.main import app
 from presence_analyzer import utils
@@ -14,11 +15,21 @@ log = logging.getLogger(__name__)  # pylint: disable-msg=C0103
 
 
 @app.route('/')
-def mainpage():
+@app.route('/<view>')
+def ui_view(view=None):
     """
-    Redirects to front page.
+    View responsible for generating UI for all tempalates
     """
-    return redirect('/static/presence_weekday.html')
+    titles = {'presence_weekday': 'Presence by weekday',
+              'mean_time_weekday': 'Presence mean time by weekday',
+              'presence_start_end': 'Presence start-end weekday'}
+    if view is None:
+        return redirect(url_for('ui_view', view='presence_weekday'))
+    else:
+        try:
+            return render_template(view + '.html', title=titles[view])
+        except KeyError, TemplateNotFound:
+            abort(404)
 
 
 @app.route('/api/v1/users', methods=['GET'])
@@ -32,9 +43,10 @@ def users_view():
             for i in data.keys()]
 
 
+@app.route('/api/v1/mean_time_weekday/', methods=['GET'])
 @app.route('/api/v1/mean_time_weekday/<int:user_id>', methods=['GET'])
 @utils.jsonify
-def mean_time_weekday_view(user_id):
+def mean_time_weekday_view(user_id=None):
     """
     Returns mean presence time of given user grouped by weekday.
     """
@@ -50,6 +62,7 @@ def mean_time_weekday_view(user_id):
     return result
 
 
+@app.route('/api/v1/presence_weekday/', methods=['GET'])
 @app.route('/api/v1/presence_weekday/<int:user_id>', methods=['GET'])
 @utils.jsonify
 def presence_weekday_view(user_id):
@@ -69,9 +82,10 @@ def presence_weekday_view(user_id):
     return result
 
 
+@app.route('/api/v1/presence_start_end/', methods=['GET'])
 @app.route('/api/v1/presence_start_end/<int:user_id>', methods=['GET'])
 @utils.jsonify
-def presence_start_end_view(user_id):
+def presence_start_end_view(user_id=None):
     """
     Return mean times of start and and of work for given user.
     """

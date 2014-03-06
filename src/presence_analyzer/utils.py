@@ -79,8 +79,9 @@ def get_data():
             user_id = int(i.attrib['id'])
             name = i.find('./name').text
             avatar = i.find('./avatar').text
-            data.setdefault(user_id, {'times': {}})['name'] = name
-            data.setdefault(user_id, {'times': {}})['avatar'] = root_url+avatar
+            if user_id in data:
+                data[user_id]['name'] = name
+                data[user_id]['avatar'] = root_url+avatar
     return data
 
 

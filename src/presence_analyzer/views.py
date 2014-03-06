@@ -39,8 +39,22 @@ def users_view():
     Users listing for dropdown.
     """
     data = utils.get_data()
-    return [{'user_id': i, 'name': 'User {0}'.format(str(i))}
-            for i in data.keys()]
+    response = []
+    for i in data.keys():
+        if 'name' in data[i]:
+            response.append({
+                'user_id': i,
+                'name': data[i]['name'],
+                'avatar': data[i]['avatar']
+            })
+        else:
+            response.append({
+                'user_id': i,
+                'name': 'User {0}'.format(str(i)),
+                'avatar': None
+            })
+
+    return response
 
 
 @app.route('/api/v1/mean_time_weekday/', methods=['GET'])
@@ -55,7 +69,7 @@ def mean_time_weekday_view(user_id=None):
         log.debug('User %s not found!', user_id)
         return []
 
-    weekdays = utils.group_by_weekday(data[user_id])
+    weekdays = utils.group_by_weekday(data[user_id]['times'])
     result = [(calendar.day_abbr[weekday], utils.mean(intervals))
               for weekday, intervals in weekdays.items()]
 
@@ -74,7 +88,7 @@ def presence_weekday_view(user_id):
         log.debug('User %s not found!', user_id)
         return []
 
-    weekdays = utils.group_by_weekday(data[user_id])
+    weekdays = utils.group_by_weekday(data[user_id]['times'])
     result = [(calendar.day_abbr[weekday], sum(intervals))
               for weekday, intervals in weekdays.items()]
 
@@ -94,8 +108,8 @@ def presence_start_end_view(user_id=None):
         log.debug('User %s not found!', user_id)
         return []
 
-    starts = utils.group_times_by_weekday(data[user_id], 'start')
-    ends = utils.group_times_by_weekday(data[user_id], 'end')
+    starts = utils.group_times_by_weekday(data[user_id]['times'], 'start')
+    ends = utils.group_times_by_weekday(data[user_id]['times'], 'end')
     result = [(calendar.day_abbr[weekday],
                utils.mean(starts[weekday]),
                utils.mean(ends[weekday]))

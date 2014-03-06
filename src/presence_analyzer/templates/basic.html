@@ -15,8 +15,32 @@
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script src="{{ url_for('static', filename='js/basic.js') }}"></script>
     <script type="text/javascript">
-{% block js %}{% endblock %}
-</script>
+    (function($) {
+        $(document).ready(function(){
+            $('#user_id').change(function(){
+                var selected_user = $('#user_id').val();
+                var avatar_div = $('#avatar_div');
+                var avatar_url = null;
+                if (selected_user) {
+                    avatar_div.hide();
+                    $.getJSON("{{ url_for('users_view') }}", function(result){
+                        $.each(result, function(item){
+                            if (selected_user == this.user_id) {
+                                avatar_url = this.avatar;
+                           }
+                        });
+                        avatar_div.empty();
+                        if (avatar_url != null) {
+                            avatar_div.append("<img src="+avatar_url+"></img>");
+                            avatar_div.show();
+                        }
+                    });
+                }
+            });
+        });
+    })(jQuery);
+    {% block js %}{% endblock %}
+    </script>
 </head>
 
 <body>
@@ -35,6 +59,8 @@
                 <select id="user_id" style="display: none">
                     <option value="">--</option>
                 </select>
+                <div id="avatar_div" style="display: none">
+                </div>
                 <div id="chart_div" style="display: none">
                 </div>
                 <div id="loading">

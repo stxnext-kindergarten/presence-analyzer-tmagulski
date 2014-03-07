@@ -4,7 +4,7 @@ Helper functions used in views.
 """
 
 import csv
-import threading
+from threading import Lock
 from datetime import datetime, timedelta
 from lxml import etree
 from json import dumps
@@ -41,16 +41,21 @@ def cache(ttl=600):
         """
         Formal decorator for caching, take time from outer scope
         """
+
+        cache_lock = Lock()
+
         @wraps(function)
         def inner(*args, **kwargs):
             global memcached_data
             memcached_key = (function.__name__, repr(args), repr(kwargs))
+            cache_lock.acquire()
             if (not memcached_key in memcached_data or
                memcached_data[memcached_key]['exp_date'] < datetime.now()):
                 memcached_data[memcached_key] = {
                     'exp_date': datetime.now()+timedelta(seconds=ttl),
                     'value': function(*args, **kwargs)
                 }
+            cache_lock.release()
             return memcached_data[memcached_key]['value']
 
         return inner

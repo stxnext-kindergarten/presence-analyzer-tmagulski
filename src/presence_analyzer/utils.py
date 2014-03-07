@@ -48,14 +48,13 @@ def cache(ttl=600):
         def inner(*args, **kwargs):
             global memcached_data
             memcached_key = (function.__name__, repr(args), repr(kwargs))
-            cache_lock.acquire()
-            if (not memcached_key in memcached_data or
-               memcached_data[memcached_key]['exp_date'] < datetime.now()):
-                memcached_data[memcached_key] = {
-                    'exp_date': datetime.now()+timedelta(seconds=ttl),
-                    'value': function(*args, **kwargs)
-                }
-            cache_lock.release()
+            with cache_lock:
+                if (not memcached_key in memcached_data or
+                   memcached_data[memcached_key]['exp_date'] < datetime.now()):
+                    memcached_data[memcached_key] = {
+                        'exp_date': datetime.now()+timedelta(seconds=ttl),
+                        'value': function(*args, **kwargs)
+                    }
             return memcached_data[memcached_key]['value']
 
         return inner

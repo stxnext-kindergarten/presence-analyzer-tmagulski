@@ -28,6 +28,7 @@ setup(
         'setuptools',
         'Flask',
         'lxml',
+        'python-memcached',
     ],
     entry_points="""
     [console_scripts]

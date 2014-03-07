@@ -4,6 +4,7 @@ Helper functions used in views.
 """
 
 import csv
+import memcache
 from lxml import etree
 from json import dumps
 from functools import wraps
@@ -27,7 +28,19 @@ def jsonify(function):
                         mimetype='application/json')
     return inner
 
+def cache(ttl=600):
+    """
+    Cache values of callable in memory for given in seconds period of time.
+    """
+    def cacher(function):
+        mc = memcache.Client(['localhost:11211'], debug=0)
+        if mc.get('get_data') == None:
+            mc.set('get_data', function(), time=ttl)
+        return mc.get('get_data')
 
+    return cacher
+
+@cache(600)
 def get_data():
     """
     Extracts presence data from CSV file and groups it by user_id.

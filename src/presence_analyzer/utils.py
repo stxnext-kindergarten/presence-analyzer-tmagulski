@@ -5,6 +5,7 @@ Helper functions used in views.
 
 import csv
 import threading
+from datetime import datetime, timedelta
 from lxml import etree
 from json import dumps
 from functools import wraps
@@ -28,16 +29,9 @@ def jsonify(function):
                         mimetype='application/json')
     return inner
 
-"""
-Dictionary responsible for caching data from time consuming functions.
-Structure looks like:
-memcached_data = {
-    (function.__name__, repr(args), repr(kwargs)): {
-        expiration_date: datetime.datetime(...)
-        value: value of function
-}
-"""
-memcached_data ={}
+
+memcached_data = {}
+
 
 def cache(ttl=600):
     """
@@ -49,10 +43,15 @@ def cache(ttl=600):
         """
         @wraps(function)
         def inner(*args, **kwargs):
-            print function.__name__
-            print repr(args)
-            print repr(kwargs)
-            return function(*args, **kwargs) 
+            global memcached_data
+            memcached_key = (function.__name__, repr(args), repr(kwargs))
+            if (not memcached_key in memcached_data or
+               memcached_data[memcached_key]['exp_date'] < datetime.now()):
+                memcached_data[memcached_key] = {
+                    'exp_date': datetime.now()+timedelta(seconds=ttl),
+                    'value': function(*args, **kwargs)
+                }
+            return memcached_data[memcached_key]['value']
 
         return inner
 

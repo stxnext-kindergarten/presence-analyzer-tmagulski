@@ -4,6 +4,8 @@ Helper functions used in views.
 """
 
 import csv
+from threading import Lock
+from datetime import datetime, timedelta
 from lxml import etree
 from json import dumps
 from functools import wraps
@@ -28,6 +30,39 @@ def jsonify(function):
     return inner
 
 
+memcached_data = {}
+
+
+def cache(ttl=600):
+    """
+    Cache values of callable in memory for given in seconds period of time.
+    """
+    def cache_with_time(function):
+        """
+        Formal decorator for caching, take time from outer scope
+        """
+
+        cache_lock = Lock()
+
+        @wraps(function)
+        def inner(*args, **kwargs):
+            global memcached_data
+            memcached_key = (function.__name__, repr(args), repr(kwargs))
+            with cache_lock:
+                if (not memcached_key in memcached_data or
+                   memcached_data[memcached_key]['exp_date'] < datetime.now()):
+                    memcached_data[memcached_key] = {
+                        'exp_date': datetime.now()+timedelta(seconds=ttl),
+                        'value': function(*args, **kwargs)
+                    }
+            return memcached_data[memcached_key]['value']
+
+        return inner
+
+    return cache_with_time
+
+
+@cache(600)
 def get_data():
     """
     Extracts presence data from CSV file and groups it by user_id.

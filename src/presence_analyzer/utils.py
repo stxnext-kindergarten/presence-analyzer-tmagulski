@@ -86,25 +86,6 @@ def get_data():
     }
     """
     data = {}
-    with open(app.config['DATA_CSV'], 'r') as csvfile:
-        presence_reader = csv.reader(csvfile, delimiter=',')
-        for i, row in enumerate(presence_reader):
-            if len(row) != 4:
-                # ignore header and footer lines
-                continue
-
-            try:
-                user_id = int(row[0])
-                date = datetime.strptime(row[1], '%Y-%m-%d').date()
-                start = datetime.strptime(row[2], '%H:%M:%S').time()
-                end = datetime.strptime(row[3], '%H:%M:%S').time()
-            except (ValueError, TypeError):
-                log.debug('Problem with line %d: ', i, exc_info=True)
-
-            data.setdefault(user_id, {'times': {}})['times'][date] = {
-                'start': start,
-                'end': end
-            }
 
     with open(app.config['DATA_XML'], 'r') as xmlfile:
         users_info = etree.parse(xmlfile)
@@ -117,12 +98,29 @@ def get_data():
             user_id = int(i.attrib['id'])
             name = i.find('./name').text
             avatar = i.find('./avatar').text
+            data[user_id] = {
+                'name': name,
+                'avatar': root_url+avatar,
+                'times': {}
+            }
+
+    with open(app.config['DATA_CSV'], 'r') as csvfile:
+        presence_reader = csv.reader(csvfile, delimiter=',')
+        for i, row in enumerate(presence_reader):
+            if len(row) != 4:
+                # ignore header and footer lines
+                continue
+            try:
+                user_id = int(row[0])
+                date = datetime.strptime(row[1], '%Y-%m-%d').date()
+                start = datetime.strptime(row[2], '%H:%M:%S').time()
+                end = datetime.strptime(row[3], '%H:%M:%S').time()
+            except (ValueError, TypeError):
+                log.debug('Problem with line %d: ', i, exc_info=True)
+
             if user_id in data:
-                data[user_id]['name'] = name
-                data[user_id]['avatar'] = root_url+avatar
-    for i in data.keys():
-        if not 'name' in data[i]:
-            del data[i]
+                data[user_id]['times'][date] = {'start': start, 'end': end}
+
     return data
 
 

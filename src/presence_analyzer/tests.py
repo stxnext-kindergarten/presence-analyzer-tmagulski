@@ -242,5 +242,55 @@ def suite():
     return suite
 
 
+class PresenceanalyzerCacheTestCase(unittest.TestCase):
+    """
+    Cache function tests.
+    """
+    def setUp(self):
+        """
+        Before each test, set up a environment.
+        """
+        self.memcached_key = ('get_data', '()', '{}')
+        utils.memcached_data = {}
+        utils.get_data()
+
+    def tearDown(self):
+        """
+        Get rid of unused objects after each test.
+        """
+        pass
+
+    def test_first_caching_get_data(self):
+        """
+        Test first caching of get_data().
+        """
+
+        self.assertEqual(len(utils.memcached_data), 1)
+        self.assertEqual(utils.memcached_data.keys()[0], self.memcached_key)
+        self.assertListEqual(
+            sorted(utils.memcached_data[self.memcached_key].keys()),
+            ['exp_date', 'value']
+        )
+
+    def test_recaching_get_data(self):
+        """
+        Test re-caching of get_data().
+        """
+        then = datetime.datetime.now()-datetime.timedelta(seconds=600)
+        utils.memcached_data[self.memcached_key]['exp_date'] = then
+        utils.get_data()
+        self.assertNotEqual(
+            utils.memcached_data[self.memcached_key]['exp_date'],
+            then
+        )
+
+        now = utils.memcached_data[self.memcached_key]['exp_date']
+        utils.get_data()
+        self.assertEqual(
+            utils.memcached_data[self.memcached_key]['exp_date'],
+            now
+        )
+
+
 if __name__ == '__main__':
     unittest.main()

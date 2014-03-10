@@ -85,6 +85,9 @@ def get_data():
             if user_id in data:
                 data[user_id]['name'] = name
                 data[user_id]['avatar'] = root_url+avatar
+    for i in data.keys():
+        if not 'name' in data[i]:
+            del data[i]
     return data
 
 

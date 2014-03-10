@@ -283,7 +283,7 @@ class PresenceanalyzerCacheTestCase(unittest.TestCase):
             utils.memcached_data[self.memcached_key]['exp_date'],
             then
         )
-        
+
         now = utils.memcached_data[self.memcached_key]['exp_date']
         utils.get_data()
         self.assertEqual(

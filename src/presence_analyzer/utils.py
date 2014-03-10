@@ -112,14 +112,13 @@ def get_data():
                 continue
             try:
                 user_id = int(row[0])
-                date = datetime.strptime(row[1], '%Y-%m-%d').date()
-                start = datetime.strptime(row[2], '%H:%M:%S').time()
-                end = datetime.strptime(row[3], '%H:%M:%S').time()
+                if user_id in data:
+                    date = datetime.strptime(row[1], '%Y-%m-%d').date()
+                    start = datetime.strptime(row[2], '%H:%M:%S').time()
+                    end = datetime.strptime(row[3], '%H:%M:%S').time()
+                    data[user_id]['times'][date] = {'start': start, 'end': end}
             except (ValueError, TypeError):
                 log.debug('Problem with line %d: ', i, exc_info=True)
-
-            if user_id in data:
-                data[user_id]['times'][date] = {'start': start, 'end': end}
 
     return data
 

@@ -17,6 +17,22 @@
     <script type="text/javascript">
     (function($) {
         $(document).ready(function(){
+                var loading = $('#loading');
+                $.getJSON("{{ url_for('users_view') }}", function(result) {
+                        result.sort(function(a, b){
+                            if (a.name > b.name)
+                                return 1;
+                            if (a.name < b.name)
+                                return -1;
+                            return 0;
+                        });
+                    var dropdown = $("#user_id");
+                    $.each(result, function(item) {
+                        dropdown.append($("<option />").val(this.user_id).text(this.name));
+                    });
+                    dropdown.show();
+                    loading.hide();
+                });
             $('#user_id').change(function(){
                 var selected_user = $('#user_id').val();
                 var avatar_div = $('#avatar_div');

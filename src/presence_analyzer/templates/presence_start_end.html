@@ -28,7 +28,7 @@
                             var formatter = new google.visualization.DateFormat({pattern: 'HH:mm:ss'});
                             formatter.format(data, 1);
                             formatter.format(data, 2);
-
+                            chart_div.show();
                             var chart = new google.visualization.Timeline(chart_div[0]);
                             chart.draw(data, options);
                         }

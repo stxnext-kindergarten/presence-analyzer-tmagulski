@@ -10,24 +10,29 @@
                         loading.show();
                         chart_div.hide();
                         $.getJSON("{{ url_for('mean_time_weekday_view') }}"+selected_user, function(result) {
-                            $.each(result, function(index, value) {
-                                value[1] = parseInterval(value[1]);
-                            });
-                            var data = new google.visualization.DataTable();
-                            data.addColumn('string', 'Weekday');
-                            data.addColumn('datetime', 'Mean time (h:m:s)');
-                            data.addRows(result);
-                            var options = {
-                                hAxis: {title: 'Weekday'}
-                            };
-                            var formatter = new google.visualization.DateFormat({pattern: 'HH:mm:ss'});
-                            formatter.format(data, 1);
-
+                            var hour_sum = 0;
+                            for (var i = 0; i < 7; i++) {
+                                hour_sum = hour_sum + result[i][1];
+                            }
+                            if (hour_sum != 0){
+                                $.each(result, function(index, value) {
+                                    value[1] = parseInterval(value[1]);
+                                });
+                                var data = new google.visualization.DataTable();
+                                data.addColumn('string', 'Weekday');
+                                data.addColumn('datetime', 'Mean time (h:m:s)');
+                                data.addRows(result);
+                                var options = {
+                                    hAxis: {title: 'Weekday'}
+                                };
+                                var formatter = new google.visualization.DateFormat({pattern: 'HH:mm:ss'});
+                                formatter.format(data, 1);
                             
-                            chart_div.show();
+                                chart_div.show();
+                                var chart = new google.visualization.ColumnChart(chart_div[0]);
+                                chart.draw(data, options);
+                            }
                             loading.hide();
-                            var chart = new google.visualization.ColumnChart(chart_div[0]);
-                            chart.draw(data, options);
                         });
                     }
                 });
